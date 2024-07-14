@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Measurements</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: white;
+
+      }
+      i{
+        margin-bottom: 650px;
+        margin-right: 400px;
+        font-size: 50px;
+        text-shadow:2px 2px 3px #ff69b4;
+        text-decoration-line: underline;
+        
+      }
+      .container {
+        display: flex;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .body-model {
+        width: 300px;
+        height: 500px;
+        margin-right: 20px;
+        position: relative;
+      }
+      .measurements {
+        width: 250px;
+        margin-left: 100px;
+        border: solid palevioletred 3px;
+        padding-left: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        padding-right: 50px;
+      }
+      h2 {
+        margin-top: 0;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+      }
+      select, input {
+        width: 100%;
+        padding: 5px;
+        margin-top: 5px;
+      }
+      .unit-toggle {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 5px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff69b4;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        background-color: #ff1493;
+      }
+    </style>
+</head>
+<body>
+  <i>Myntra</i>
+    <div class="container">
+<canvas id="bodyModel"></canvas>            <!-- Placeholder for 3D body model -->
+        </div>
+        <div class="measurements">
+            <h2>Measurements</h2>
+            <label for="location">Location</label>
+            <select id="location">
+              <option value="UK">India</option>
+                <option value="UK">🇬🇧 UK</option>
+                <option value="US">🇺🇸 US</option>
+                <option value="EU">🇪🇺 EU</option>
+            </select>
+
+            <label for="height">Height</label>
+            <div style="display: flex;">
+                <select id="heightFeet" style="width: 50%; margin-right: 5px;">
+                    <option value="4">4ft</option>
+                    <option value="5" selected>5ft</option>
+                    <option value="6">6ft</option>
+                </select>
+                <select id="heightInches" style="width: 50%;">
+                    <option value="0">0in</option>
+                    <option value="1">1in</option>
+                    <option value="2">2in</option>
+                    <option value="3">3in</option>
+                    <option value="4" selected>4in</option>
+                    <option value="5">5in</option>
+                    <option value="6">6in</option>
+                    <option value="7">7in</option>
+                    <option value="8">8in</option>
+                    <option value="9">9in</option>
+                    <option value="10">10in</option>
+                    <option value="11">11in</option>
+                </select>
+            </div>
+            <div class="unit-toggle">
+                <label><input type="radio" name="unit" value="cm"> cm</label>
+                <label><input type="radio" name="unit" value="in" checked> in</label>
+            </div>
+
+            <label for="dressSize">Dress size</label>
+            <select id="dressSize">
+                <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="14" selected>14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+            </select>
+
+            <label for="braSize">Bra size</label>
+            <div style="display: flex;">
+                <select id="braBand" style="width: 50%; margin-right: 5px;">
+                    <option value="32">32</option>
+                    <option value="34">34</option>
+                    <option value="36" selected>36</option>
+                    <option value="38">38</option>
+                    <option value="40">40</option>
+                </select>
+                <select id="braCup" style="width: 50%;">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C" selected>C</option>
+                    <option value="D">D</option>
+      
+                </select>
+            </div>
+
+            <button onclick="updateModel()">NEXT</button>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, bodyMesh;
+
+function initScene() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, 300 / 500, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bodyModel') });
+    renderer.setSize(300, 500);
+
+    // Add lighting
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(0, 0, 10);
+    scene.add(light);
+
+    // Create a basic body shape
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
+    const material = new THREE.MeshPhongMaterial({ color: 0xffaa00 });
+    bodyMesh = new THREE.Mesh(geometry, material);
+    scene.add(bodyMesh);
+
+    camera.position.z = 5;
+
+    animate();
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+
+function updateModel() {
+    const heightFeet = parseInt(document.getElementById('heightFeet').value);
+    const heightInches = parseInt(document.getElementById('heightInches').value);
+    const dressSize = parseInt(document.getElementById('dressSize').value);
+    const braBand = parseInt(document.getElementById('braBand').value);
+    const braCup = document.getElementById('braCup').value;
+
+    // Convert height to a scale factor
+    const heightInInches = (heightFeet * 12) + heightInches;
+    const scale = heightInInches / 60; // Assuming 5ft (60 inches) is the base height
+
+    // Adjust body shape based on inputs
+    bodyMesh.scale.set(1 + (dressSize - 10) / 20, scale, 1 + (dressSize - 10) / 20);
+
+    // Adjust upper body based on bra size
+    const bustScale = 1 + (braBand - 34) / 20 + (braCup.charCodeAt(0) - 65) / 10;
+    bodyMesh.geometry.parameters.radiusTop = 0.5 * bustScale;
+
+    // Update the geometry
+    bodyMesh.geometry = new THREE.CylinderGeometry(
+        bodyMesh.geometry.parameters.radiusTop,
+        bodyMesh.geometry.parameters.radiusBottom,
+        bodyMesh.geometry.parameters.height,
+        bodyMesh.geometry.parameters.radialSegments
+    );
+}
+
+// Initialize the scene when the page loads
+window.onload = initScene;
+
+// Add event listeners to form inputs
+document.getElementById('heightFeet').addEventListener('change', updateModel);
+document.getElementById('heightInches').addEventListener('change', updateModel);
+document.getElementById('dressSize').addEventListener('change', updateModel);
+document.getElementById('braBand').addEventListener('change', updateModel);
+document.getElementById('braCup').addEventListener('change', updateModel);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</body>
+</html>
